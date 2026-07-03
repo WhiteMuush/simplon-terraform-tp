@@ -8,15 +8,10 @@ terraform {
   }
 }
 
-data "azurerm_service_plan" "shared" {
-  name                = split("/", var.service_plan_id)[8]
-  resource_group_name = split("/", var.service_plan_id)[4]
-}
-
-resource "azurerm_linux_web_app" "app" {
+resource "azurerm_linux_web_app" "app" {  
   name                = "app-${var.owner}-tf"
-  resource_group_name = data.azurerm_service_plan.shared.name
-  location            = data.azurerm_service_plan.shared.location
+  resource_group_name = var.resource_group_name
+  location            = var.location
   service_plan_id     = var.service_plan_id
   https_only          = true
   site_config {
