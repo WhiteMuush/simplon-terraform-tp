@@ -48,14 +48,13 @@ module "storage" {
 # TODO : appeler le module "./modules/app-service"
 # Paramètres à passer : owner, resource_group_name, service_plan_id, tags
 
-# module "app_service" {
-#   source = "./modules/app-service"
-#
-#   owner               = ???
-#   resource_group_name = ???
-#   service_plan_id     = ???   # récupéré depuis data.azurerm_service_plan.shared
-#   tags                = ???
-# }
+module "app_service" {
+  source = "./modules/app-service"
+  owner               = var.owner
+  resource_group_name = data.azurerm_resource_group.rg.name
+  service_plan_id     = data.azurerm_service_plan.shared.id
+  tags                = var.tags
+}
 
 # ── Function App (Étape 3) ────────────────────────────────────────────────────
 # TODO : appeler le module "./modules/function-app"
