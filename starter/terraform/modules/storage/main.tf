@@ -16,17 +16,17 @@ terraform {
 #
 # Documentation : https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account
 
-# resource "azurerm_storage_account" "sa" {
-#   name                            = ???
-#   resource_group_name             = ???
-#   location                        = ???
-#   account_tier                    = ???
-#   account_replication_type        = ???
-#   account_kind                    = ???
-#   min_tls_version                 = ???
-#   allow_nested_items_to_be_public = ???   # true pour permettre api-config public
-#   tags                            = ???
-# }
+resource "azurerm_storage_account" "sa" {
+  name                            = "st${replace(var.owner, "-", "")}tf"
+  resource_group_name             = var.resource_group_name
+  location                        = var.location
+  account_tier                    = var.location
+  account_replication_type        = LRS
+  account_kind                    = StorageV2
+  min_tls_version                 = 1.2
+  allow_nested_items_to_be_public = true
+  tags                            = var.tags
+}
 
 # TODO (2/3) : conteneur privé pour les logs API
 #
