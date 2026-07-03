@@ -1,6 +1,7 @@
 variable "owner" {
   description = "Learner identifier (firstname-lastname, lowercase, hyphens). Ex: john-doe"
   type        = string
+  default     = "melvin-petit"
 
   validation {
     condition     = can(regex("^[a-z][a-z0-9-]+[a-z0-9]$", var.owner))
@@ -11,6 +12,7 @@ variable "owner" {
 variable "resource_group_name" {
   description = "Name of the Resource Group pre-created by the trainer. Ex: rg-john-doe"
   type        = string
+  default     = "mpetitRG"
 }
 
 variable "location" {
