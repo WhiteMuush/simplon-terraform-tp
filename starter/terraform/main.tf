@@ -61,15 +61,14 @@ module "app_service" {
 # TODO : appeler le module "./modules/function-app"
 # Paramètres à passer : owner, resource_group_name, location, service_plan_id, tags
 
-# module "function_app" {
-#   source = "./modules/function-app"
-#
-#   owner               = ???
-#   resource_group_name = ???
-#   location            = ???
-#   service_plan_id     = ???
-#   tags                = ???
-# }
+module "function_app" {
+  source = "./modules/function-app"
+  owner               = var.owner
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.location
+  service_plan_id     = data.azurerm_service_plan.shared.id
+  tags                = var.tags
+}
 
 # ── Container Instance (Étape 3) ──────────────────────────────────────────────
 # TODO : appeler le module "./modules/container"
