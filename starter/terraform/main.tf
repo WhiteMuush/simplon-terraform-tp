@@ -52,6 +52,7 @@ module "app_service" {
   source = "./modules/app-service"
   owner               = var.owner
   resource_group_name = data.azurerm_resource_group.rg.name
+  location            = var.location 
   service_plan_id     = data.azurerm_service_plan.shared.id
   tags                = var.tags
 }
