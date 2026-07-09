@@ -26,7 +26,7 @@ resource "azurerm_container_group" "aci" {
   location            = var.location
   ip_address_type     = "Public"
   dns_name_label      = "aci-${var.owner}-tf"
-  os_type             = Linux
+  os_type             = "Linux"
   container {
     name   = "nginx"
     image  = "nginx:latest"
