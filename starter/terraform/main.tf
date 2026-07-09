@@ -74,14 +74,13 @@ module "function_app" {
 # TODO : appeler le module "./modules/container"
 # Paramètres à passer : owner, resource_group_name, location, tags
 
-# module "container" {
-#   source = "./modules/container"
-#
-#   owner               = ???
-#   resource_group_name = ???
-#   location            = ???
-#   tags                = ???
-# }
+module "container" {
+  source = "./modules/container"
+  owner               = var.owner
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  tags                = var.tags
+}
 
 # ── Network (Étape 7) ─────────────────────────────────────────────────────────
 # TODO : appeler le module "./modules/network"
