@@ -24,7 +24,7 @@ output "container_fqdn" {
 }
 
 # TODO : Nom du Storage Account métier
-# output "storage_account_name" {
-#   description = "Nom du Storage Account"
-#   value       = module.storage.storage_account_name
-# }
+output "storage_account_name" {
+  description = "Nom du Storage Account"
+  value       = module.storage.storage_account_name
+}
