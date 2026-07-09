@@ -8,7 +8,6 @@ terraform {
   }
 }
 
-# TODO (1/4) : créer un azurerm_virtual_network
 #
 # Nom            : "vnet-${var.owner}-tf"
 # Espace d'adres.: ["10.0.0.0/16"]
@@ -39,7 +38,6 @@ resource "azurerm_subnet" "backend" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-# TODO (3/4) : créer un NSG avec 3 règles pour subnet-frontend
 #
 # Nom    : "nsg-frontend-${var.owner}-tf"
 # Règles : Allow-HTTP (100), Allow-HTTPS (110), Deny-All-Inbound (4000)
