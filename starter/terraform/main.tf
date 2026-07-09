@@ -13,7 +13,7 @@ locals {
       managed_by  = "terraform"
       environment = "tp"
       owner       = var.owner
-    },
+    }
     var.tags
   )
 }
