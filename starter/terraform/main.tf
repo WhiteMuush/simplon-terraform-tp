@@ -37,7 +37,7 @@ data "azurerm_service_plan" "shared" {
 # Paramètres à passer : owner, resource_group_name, location, tags
 
 module "storage" {
-  source = "./modules/storage"
+  source              = "./modules/storage"
   owner               = var.owner
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.location
@@ -49,10 +49,10 @@ module "storage" {
 # Paramètres à passer : owner, resource_group_name, service_plan_id, tags
 
 module "app_service" {
-  source = "./modules/app-service"
+  source              = "./modules/app-service"
   owner               = var.owner
   resource_group_name = data.azurerm_resource_group.rg.name
-  location            = var.location 
+  location            = var.location
   service_plan_id     = data.azurerm_service_plan.shared.id
   tags                = var.tags
 }
@@ -62,7 +62,7 @@ module "app_service" {
 # Paramètres à passer : owner, resource_group_name, location, service_plan_id, tags
 
 module "function_app" {
-  source = "./modules/function-app"
+  source              = "./modules/function-app"
   owner               = var.owner
   resource_group_name = data.azurerm_resource_group.rg.name
   location            = var.location
@@ -75,7 +75,7 @@ module "function_app" {
 # Paramètres à passer : owner, resource_group_name, location, tags
 
 module "container" {
-  source = "./modules/container"
+  source              = "./modules/container"
   owner               = var.owner
   resource_group_name = var.resource_group_name
   location            = var.location

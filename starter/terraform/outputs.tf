@@ -6,22 +6,22 @@
 # ──────────────────────────────────────────────────────────────────────────────
 
 # TODO : URL de l'App Service
-# output "app_service_url" {
-#   description = "URL publique de l'App Service"
-#   value       = "https://${module.app_service.default_hostname}"
-# }
+output "app_service_url" {
+  description = "URL publique de l'App Service"
+  value       = "https://${module.app_service.default_hostname}"
+}
 
 # TODO : URL de la Function App
-# output "function_app_url" {
-#   description = "URL publique de la Function App"
-#   value       = "https://${module.function_app.default_hostname}"
-# }
+output "function_app_url" {
+  description = "URL publique de la Function App"
+  value       = "https://${module.function_app.default_hostname}"
+}
 
 # TODO : FQDN du Container ACI
-# output "container_fqdn" {
-#   description = "FQDN public du container nginx"
-#   value       = "http://${module.container.fqdn}"
-# }
+output "container_fqdn" {
+  description = "FQDN public du container nginx"
+  value       = "http://${module.container.fqdn}"
+}
 
 # TODO : Nom du Storage Account métier
 # output "storage_account_name" {
