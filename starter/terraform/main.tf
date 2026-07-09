@@ -33,7 +33,6 @@ data "azurerm_service_plan" "shared" {
 }
 
 # ── Storage (Étape 2) ─────────────────────────────────────────────────────────
-# TODO : appeler le module "./modules/storage"
 # Paramètres à passer : owner, resource_group_name, location, tags
 
 module "storage" {
@@ -45,7 +44,6 @@ module "storage" {
 }
 
 # ── App Service (Étape 3) ─────────────────────────────────────────────────────
-# TODO : appeler le module "./modules/app-service"
 # Paramètres à passer : owner, resource_group_name, service_plan_id, tags
 
 module "app_service" {
@@ -58,7 +56,6 @@ module "app_service" {
 }
 
 # ── Function App (Étape 3) ────────────────────────────────────────────────────
-# TODO : appeler le module "./modules/function-app"
 # Paramètres à passer : owner, resource_group_name, location, service_plan_id, tags
 
 module "function_app" {
@@ -71,7 +68,6 @@ module "function_app" {
 }
 
 # ── Container Instance (Étape 3) ──────────────────────────────────────────────
-# TODO : appeler le module "./modules/container"
 # Paramètres à passer : owner, resource_group_name, location, tags
 
 module "container" {
@@ -83,14 +79,12 @@ module "container" {
 }
 
 # ── Network (Étape 7) ─────────────────────────────────────────────────────────
-# TODO : appeler le module "./modules/network"
 # Paramètres à passer : owner, resource_group_name, location, tags
 
-# module "network" {
-#   source = "./modules/network"
-#
-#   owner               = ???
-#   resource_group_name = ???
-#   location            = ???
-#   tags                = ???
-# }
+module "network" {
+  source              = "./modules/network"
+  owner               = var.owner
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  tags                = var.tags
+}
