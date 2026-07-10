@@ -25,7 +25,7 @@ resource "azurerm_virtual_network" "vnet" {
 # Documentation : https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
 
 resource "azurerm_subnet" "frontend" {
-name                 = "subnet-frontend"
+  name                 = "subnet-frontend"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = ["10.0.1.0/24"]
