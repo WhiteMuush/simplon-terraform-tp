@@ -8,7 +8,7 @@ terraform {
   }
 }
 
-resource "azurerm_linux_web_app" "app" {  
+resource "azurerm_linux_web_app" "app" {
   name                = "app-${var.owner}-tf"
   resource_group_name = var.resource_group_name
   location            = var.location
