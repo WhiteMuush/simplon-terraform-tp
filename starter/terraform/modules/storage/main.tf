@@ -28,24 +28,16 @@ resource "azurerm_storage_account" "sa" {
   tags                            = var.tags
 }
 
-# TODO (2/3) : conteneur privé pour les logs API
-#
-# Nom                  : "api-logs"
-# container_access_type: "private"
+# Conteneur privé pour les logs API
+resource "azurerm_storage_container" "api_logs" {
+  name                  = "api-logs"
+  storage_account_id    = azurerm_storage_account.sa.id
+  container_access_type = "private"
+}
 
-# resource "azurerm_storage_container" "api_logs" {
-#   name                  = ???
-#   storage_account_id    = ???
-#   container_access_type = ???
-# }
-
-# TODO (3/3) : conteneur public pour la config API
-#
-# Nom                  : "api-config"
-# container_access_type: "blob"  (lecture anonyme des blobs, pas du container)
-
-# resource "azurerm_storage_container" "api_config" {
-#   name                  = ???
-#   storage_account_id    = ???
-#   container_access_type = ???
-# }
+# Conteneur public pour la config API (lecture anonyme des blobs)
+resource "azurerm_storage_container" "api_config" {
+  name                  = "api-config"
+  storage_account_id    = azurerm_storage_account.sa.id
+  container_access_type = "blob"
+}
