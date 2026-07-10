@@ -1,0 +1,95 @@
+name: terraform.yml
+
+on:
+  workflow_call:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+
+  quality:
+    runs-on: ubuntu-22.04
+
+    defaults:
+      run:
+        working-directory: starter/terraform
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check -recursive
+
+  lint:
+    needs: quality
+    runs-on: ubuntu-22.04
+
+    defaults:
+      run:
+        working-directory: starter/terraform
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint Terraform
+        uses: actionshub/terraform-lint@main
+
+  build:
+    needs: lint
+    runs-on: ubuntu-22.04
+
+    defaults:
+      run:
+        working-directory: starter/terraform
+
+    env:
+      ARM_USE_OIDC: "true"
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/oidc
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - uses: hashicorp/setup-terraform@v3
+      - run: |
+          terraform init \
+            -backend-config="resource_group_name=mpetitRG" \
+            -backend-config="storage_account_name=ststatemelvinpetit" \
+            -backend-config="container_name=tfstate" \
+            -backend-config="key=melvin-petit.terraform.tfstate"
+      - run: terraform plan
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-22.04
+
+    defaults:
+      run:
+        working-directory: starter/terraform
+
+    env:
+      ARM_USE_OIDC: "true"
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/oidc
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - uses: hashicorp/setup-terraform@v3
+      - run: |
+          terraform init \
+            -backend-config="resource_group_name=mpetitRG" \
+            -backend-config="storage_account_name=ststatemelvinpetit" \
+            -backend-config="container_name=tfstate" \
+            -backend-config="key=melvin-petit.terraform.tfstate"
+      - run: terraform apply -auto-approve

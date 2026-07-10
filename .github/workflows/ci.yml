@@ -3,16 +3,24 @@ name: CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Example step
-        run: echo "Add your build/test steps here!"
+      - name: terraform-test
+        run: echo -e "Check up the quality of code"
+
+  terraform:
+    needs: build
+    uses: ./.github/workflows/terraform.yml
+    secrets: inherit
+    permissions:
+      id-token: write
+      contents: read
+
+
