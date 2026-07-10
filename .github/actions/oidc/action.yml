@@ -1,0 +1,22 @@
+name: oidc
+description: Connexion Azure via OIDC
+
+inputs:
+  client-id:
+    required: true
+    description: AZURE_CLIENT_ID
+  tenant-id:
+    required: true
+    description: AZURE_TENANT_ID
+  subscription-id:
+    required: true
+    description: AZURE_SUBSCRIPTION_ID
+
+runs:
+  using: composite
+  steps:
+    - uses: azure/login@v2
+      with:
+        client-id: ${{ inputs.client-id }}
+        tenant-id: ${{ inputs.tenant-id }}
+        subscription-id: ${{ inputs.subscription-id }}
