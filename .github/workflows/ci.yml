@@ -1,14 +1,14 @@
 name: CI
 
 on:
-  pull:
-    branches: [ "main"]
+  pull_request:
+    branches: [ "main" ]
   push:
     branches: [ "main" ]
 
 jobs:
   build:
-    runs-on: ubuntu-22.
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
