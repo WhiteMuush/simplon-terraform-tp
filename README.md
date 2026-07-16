@@ -1,11 +1,19 @@
-# Azure Infrastructure as Code with Terraform
+<div align="center">
+
+<h1>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg" height="30" alt="Azure"/>
+  &nbsp;Azure Infrastructure as Code with Terraform&nbsp;
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" height="30" alt="Terraform"/>
+</h1>
 
 ![Terraform](https://img.shields.io/badge/Terraform-%3E%3D1.9-7B42BC?logo=terraform&logoColor=white)
 ![Azure](https://img.shields.io/badge/Azure-francecentral-0078D4?logo=microsoftazure&logoColor=white)
 ![Provider](https://img.shields.io/badge/azurerm-~%3E4.0-0078D4)
 ![CI/CD](https://img.shields.io/badge/GitHub_Actions-OIDC-2088FF?logo=githubactions&logoColor=white)
-![State](https://img.shields.io/badge/state-Azure_Blob_(remote)-success)
+![State](https://img.shields.io/badge/state-HCP_Terraform_(cloud)-844FBA?logo=terraform&logoColor=white)
 ![Auth](https://img.shields.io/badge/auth-OIDC_(no_secret)-brightgreen)
+
+</div>
 
 Provisioning of a full Azure application stack, described entirely as code with Terraform and shipped through a passwordless GitHub Actions pipeline. Same resources I previously created by hand with the Azure CLI, now versioned, reproducible and deployed automatically.
 
@@ -26,24 +34,24 @@ All resources are tagged `managed_by = terraform`, `environment = tp`, `owner = 
 ## Architecture
 
 ```
-GitHub push (main)
+GitHub push / PR (main)
       │
       ▼
 GitHub Actions ── OIDC (JWT, no secret) ──► Azure
       │
-      ├─ fmt / lint / validate / plan
-      └─ apply
+      ├─ quality (fmt) / lint / plan
+      └─ apply (production env, manual approval)
                  │
                  ▼
-         Azure resources ◄── remote state ── Azure Blob Storage (locked)
+         Azure resources ◄── remote state ── HCP Terraform (cloud backend)
 ```
 
 ## Tech stack
 
 - **Terraform** `>= 1.9`, provider `azurerm ~> 4.0`
 - **Azure** region `francecentral`
-- **Remote state**: Azure Blob Storage backend, injected at runtime via `-backend-config` (no account names committed)
-- **Auth**: OIDC federated credentials, zero `CLIENT_SECRET` stored anywhere
+- **Remote state**: HCP Terraform (cloud backend), organization `WhiteMuush-Organizations`, workspace `simplon-terraform-tp`. State and locking managed by HCP, authenticated with a `TF_API_TOKEN`
+- **Auth**: Azure via OIDC federated credentials, zero `CLIENT_SECRET` stored anywhere
 - **CI/CD**: GitHub Actions with a reusable workflow + a composite action for the Azure login
 
 ## Repository layout
@@ -52,7 +60,7 @@ GitHub Actions ── OIDC (JWT, no secret) ──► Azure
 starter/terraform/
 ├── main.tf            # data sources + module wiring
 ├── providers.tf       # azurerm ~> 4.0, use_oidc = true
-├── backend.tf         # azurerm remote backend (values injected at runtime)
+├── backend.tf         # HCP Terraform cloud backend (org + workspace)
 ├── variables.tf       # owner, resource_group_name, location, tags (with validation)
 ├── outputs.tf         # app / function / container URLs + storage name
 └── modules/
@@ -70,14 +78,14 @@ Makefile               # local mirror of the CI steps
 
 ## CI/CD pipeline
 
-`ci.yml` triggers on push to `main` and calls the reusable `terraform.yml`, which runs four sequential jobs:
+`ci.yml` triggers on **push and pull_request** to `main`. It runs a `build` gate then calls the reusable `terraform.yml`, which runs four sequential jobs:
 
 1. **quality** — `terraform fmt -check -recursive`
 2. **lint** — `terraform-lint`
-3. **build** — OIDC login, `terraform init` (remote backend), `terraform plan`
-4. **deploy** — OIDC login, `terraform init`, `terraform apply -auto-approve`
+3. **build** — OIDC login, `terraform init`, `terraform plan`
+4. **deploy** — `production` environment (manual approval gate), OIDC login, `terraform init`, `terraform apply -auto-approve`
 
-Azure auth is handled by the `oidc` composite action wrapping `azure/login@v2`. Only three secrets are needed: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`. No client secret.
+Azure auth is handled by the `oidc` composite action wrapping `azure/login@v2`. Four secrets are needed: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` (Azure, no client secret) and `TF_API_TOKEN` (HCP Terraform backend + registry).
 
 ## Run it locally
 
@@ -93,11 +101,12 @@ Or directly:
 
 ```bash
 cd starter/terraform
-terraform init \
-  -backend-config="resource_group_name=<rg>" \
-  -backend-config="storage_account_name=<sa>" \
-  -backend-config="container_name=tfstate" \
-  -backend-config="key=<owner>.terraform.tfstate"
+
+# authenticate to HCP Terraform once (opens browser, stores token)
+terraform login
+# or export TF_TOKEN_app_terraform_io=<your HCP token>
+
+terraform init   # state lives in HCP, no -backend-config needed
 terraform plan
 terraform apply
 ```
