@@ -1,6 +1,10 @@
-# Remote state stored in Azure Blob Storage
-# Backend config values are injected at runtime via -backend-config
-# (never commit account names or secrets here)
+# State stocké dans HCP Terraform (workspace simplon-terraform-tp)
 terraform {
-  backend "azurerm" {}
+  cloud {
+    organization = "WhiteMuush-Organizations"
+
+    workspaces {
+      name = "simplon-terraform-tp"
+    }
+  }
 }
