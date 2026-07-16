@@ -1,28 +1,19 @@
-name: CI
+name: CI (plan)
 
+# Validation only: fmt + lint + plan. No apply.
+# Runs on the feature branch and on PRs targeting main.
 on:
-  pull_request:
-    branches: [ "main" ]
   push:
+    branches: [ "feat/terraform-resources" ]
+  pull_request:
     branches: [ "main" ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: terraform-test
-        run: echo -e "Check up the quality of code"
-
   terraform:
-    needs: build
     uses: ./.github/workflows/terraform.yml
+    with:
+      apply: false
     secrets: inherit
     permissions:
       id-token: write
       contents: read
-
-
