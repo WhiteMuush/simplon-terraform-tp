@@ -8,12 +8,6 @@ terraform {
   }
 }
 
-#
-# Nom            : "vnet-${var.owner}-tf"
-# Espace d'adres.: ["10.0.0.0/16"]
-#
-# Documentation : https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_network
-
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-${var.owner}-tf"
   resource_group_name = var.resource_group_name
@@ -21,8 +15,6 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = ["10.0.0.0/16"]
   tags                = var.tags
 }
-
-# Documentation : https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet
 
 resource "azurerm_subnet" "frontend" {
   name                 = "subnet-frontend"
@@ -38,21 +30,11 @@ resource "azurerm_subnet" "backend" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-#
-# Nom    : "nsg-frontend-${var.owner}-tf"
-# Règles : Allow-HTTP (100), Allow-HTTPS (110), Deny-All-Inbound (4000)
-#
-# Documentation : https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_security_group
-
 resource "azurerm_network_security_group" "nsg" {
   name                = "nsg-frontend-${var.owner}-tf"
   resource_group_name = var.resource_group_name
   location            = var.location
   tags                = var.tags
-
-  #   # TODO : ajouter Allow-HTTP  (port 80,  priorité 100, action Allow)
-  #   # TODO : ajouter Allow-HTTPS (port 443, priorité 110, action Allow)
-  #   # TODO : ajouter Deny-All-Inbound (port *, priorité 4000, action Deny)
 
   security_rule {
     name                       = "Allow-HTTP"
@@ -89,16 +71,6 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 }
-
-
-
-
-
-
-
-# TODO (4/4) : associer le NSG au subnet-frontend
-#
-# Documentation : https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet_network_security_group_association
 
 resource "azurerm_subnet_network_security_group_association" "frontend_nsg" {
   subnet_id                 = azurerm_subnet.frontend.id

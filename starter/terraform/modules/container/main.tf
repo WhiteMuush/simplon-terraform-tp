@@ -8,18 +8,6 @@ terraform {
   }
 }
 
-#TODO : créer un azurerm_container_group (ACI)
-
-#Nom attendu      : "aci-${var.owner}-tf"
-#Image            : "nginx:latest"
-#IP               : Public
-#DNS label        : "aci-${var.owner}-tf"
-#CPU / Mémoire    : 0.5 / 0.5
-#Port             : 80 TCP
-#OS               : Linux
-
-#Documentation : https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_group
-
 resource "azurerm_container_group" "aci" {
   name                = "aci-${var.owner}-tf"
   resource_group_name = var.resource_group_name
