@@ -1,0 +1,15 @@
+name: CD (apply)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  terraform:
+    uses: ./.github/workflows/terraform.yml
+    with:
+      apply: true
+    secrets: inherit
+    permissions:
+      id-token: write
+      contents: read
